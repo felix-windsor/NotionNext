@@ -67,7 +67,7 @@ const LayoutBase = props => {
       {router.route === '/' ? (
         <>
           <NoticeBar />
-          <Hero {...props} />
+          {siteConfig('HEO_HOME_BANNER_ENABLE', null, CONFIG) !== false && <Hero {...props} />}
         </>
       ) : null}
       {fullWidth ? null : <PostHeader {...props} isDarkMode={isDarkMode} />}
