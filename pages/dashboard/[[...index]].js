@@ -3,6 +3,7 @@ import { siteConfig } from '@/lib/config'
 import { resolvePostProps } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
 import PropTypes from 'prop-types'
+import { getRuntimeFallback } from '@/lib/build/isrPolicy'
 
 /**
  * 根据notion的slug访问页面
@@ -49,7 +50,7 @@ export const getStaticPaths = () => {
       { params: { index: ['order'] } },
       { params: { index: ['affiliate'] } }
     ],
-    fallback: 'blocking' // 或者 true，阻塞式渲染
+    fallback: getRuntimeFallback()
   }
 }
 

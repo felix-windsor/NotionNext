@@ -4,6 +4,7 @@ import { fetchGlobalAllData, getPostBlocks } from '@/lib/db/SiteDataApi'
 import { formatNotionBlock } from '@/lib/db/notion/getPostBlocks'
 import { adapterNotionBlockMap } from '@/lib/utils/notion.util'
 import { DynamicLayout } from '@/themes/theme'
+import { getRuntimeFallback } from '@/lib/build/isrPolicy'
 
 /**
  * 文章列表分页
@@ -26,7 +27,7 @@ export async function getStaticPaths({ locale }) {
     paths: Array.from({ length: totalPages - 1 }, (_, i) => ({
       params: { page: '' + (i + 2) }
     })),
-    fallback: true
+    fallback: getRuntimeFallback()
   }
 }
 

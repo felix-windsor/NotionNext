@@ -3,6 +3,7 @@ import { getDataFromCache } from '@/lib/cache/cache_manager'
 import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
+import { getRuntimeFallback } from '@/lib/build/isrPolicy'
 
 const Index = props => {
   const { keyword } = props
@@ -53,7 +54,7 @@ export async function getStaticProps({ params: { keyword, page }, locale }) {
 export function getStaticPaths() {
   return {
     paths: [{ params: { keyword: 'NotionNext', page: '1' } }],
-    fallback: true
+    fallback: getRuntimeFallback()
   }
 }
 

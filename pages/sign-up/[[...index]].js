@@ -2,6 +2,7 @@ import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
+import { getRuntimeFallback } from '@/lib/build/isrPolicy'
 
 /**
  * 注册
@@ -42,7 +43,7 @@ export function getStaticPaths() {
       { params: { index: [] } }, // 使 /sign-up 路径可访问
       { params: { index: ['sign-up'] } } // 明确 sign-up 生成路径
     ],
-    fallback: 'blocking' // 使用 'blocking' 模式让未生成的路径也能正确响应
+    fallback: getRuntimeFallback()
   }
 }
 export default SignUp

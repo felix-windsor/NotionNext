@@ -214,6 +214,19 @@ const nextConfig = {
     ? undefined
     : () => {
       return [
+        // Search terms are user input, not stable page identities. Keep them
+        // in the query string so crawlers cannot create an unbounded ISR page
+        // for every keyword and page number.
+        {
+          source: '/search/:keyword/page/:page',
+          destination: '/search?s=:keyword',
+          permanent: true
+        },
+        {
+          source: '/search/:keyword',
+          destination: '/search?s=:keyword',
+          permanent: true
+        },
         {
           source: '/feed',
           destination: '/rss/feed.xml',
