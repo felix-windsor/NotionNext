@@ -9,7 +9,10 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+# The lockfile may contain a regional mirror that is unreliable on global CI runners.
+# Keep the locked versions and integrity hashes, but fetch the same artifacts from npm.
+RUN sed -i 's#https://registry.npmmirror.com#https://registry.npmjs.org#g' yarn.lock \
+    && yarn install --frozen-lockfile
 
 # 2. Rebuild the source code only when needed
 FROM base AS builder
