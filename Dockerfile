@@ -12,7 +12,7 @@ COPY package.json yarn.lock ./
 # The lockfile may contain a regional mirror that is unreliable on global CI runners.
 # Keep the locked versions and integrity hashes, but fetch the same artifacts from npm.
 RUN sed -i 's#https://registry.npmmirror.com#https://registry.npmjs.org#g' yarn.lock \
-    && yarn install --frozen-lockfile
+    && yarn install --frozen-lockfile --network-timeout 600000 --network-concurrency 4
 
 # 2. Rebuild the source code only when needed
 FROM base AS builder
