@@ -2,6 +2,7 @@ import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
+import { getRuntimeFallback } from '@/lib/build/isrPolicy'
 
 /**
  * 分类页
@@ -76,6 +77,6 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: true
+    fallback: getRuntimeFallback()
   }
 }

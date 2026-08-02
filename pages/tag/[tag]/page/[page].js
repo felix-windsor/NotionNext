@@ -2,6 +2,7 @@ import BLOG from '@/blog.config'
 import { siteConfig } from '@/lib/config'
 import { fetchGlobalAllData } from '@/lib/db/SiteDataApi'
 import { DynamicLayout } from '@/themes/theme'
+import { getRuntimeFallback } from '@/lib/build/isrPolicy'
 
 const Tag = props => {
   const theme = siteConfig('THEME', BLOG.THEME, props.NOTION_CONFIG)
@@ -61,7 +62,7 @@ export async function getStaticPaths() {
   })
   return {
     paths: paths,
-    fallback: true
+    fallback: getRuntimeFallback()
   }
 }
 

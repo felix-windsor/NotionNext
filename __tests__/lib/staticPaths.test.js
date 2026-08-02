@@ -17,12 +17,16 @@ jest.mock('@/lib/utils/buildMode', () => ({
 
 const { getOrSetDataWithCache } = require('@/lib/cache/cache_manager')
 const { fetchGlobalAllData } = require('@/lib/db/SiteDataApi')
-const { getPriorityPages, prefetchAllBlockMaps } = require('@/lib/build/prefetch')
+const {
+  getPriorityPages,
+  prefetchAllBlockMaps
+} = require('@/lib/build/prefetch')
 const { isExport } = require('@/lib/utils/buildMode')
 
 describe('staticPaths build helpers', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    delete process.env.NEXT_PUBLIC_ENABLE_RUNTIME_ISR
 
     getOrSetDataWithCache.mockImplementation((_key, loader) => loader())
   })
@@ -100,7 +104,40 @@ describe('staticPaths build helpers', () => {
     })
   })
 
-  it('uses priority pages in ISR mode', async () => {
+  it('prebuilds all matching paths by default to keep runtime ISR bounded', async () => {
+    isExport.mockReturnValue(false)
+    fetchGlobalAllData.mockResolvedValue({
+      allPages: [
+        { id: '1', slug: 'about', type: 'Page', status: 'Published' },
+        { id: '2', slug: 'post/hello', type: 'Post', status: 'Published' }
+      ]
+    })
+    getPriorityPages.mockReturnValue([])
+
+    await jest.isolateModulesAsync(async () => {
+      const { getStaticPathsBase } = require('@/lib/build/staticPaths')
+
+      const result = await getStaticPathsBase({
+        filterFn: page => page.slug.includes('/'),
+        mapPageToParams: page => ({
+          params: {
+            prefix: page.slug.split('/')[0],
+            slug: page.slug.split('/')[1]
+          }
+        })
+      })
+
+      expect(prefetchAllBlockMaps).not.toHaveBeenCalled()
+      expect(result).toEqual({
+        paths: [{ params: { prefix: 'post', slug: 'hello' } }],
+        fallback: false
+      })
+      expect(getPriorityPages).not.toHaveBeenCalled()
+    })
+  })
+
+  it('allows blocking runtime ISR only when explicitly enabled', async () => {
+    process.env.NEXT_PUBLIC_ENABLE_RUNTIME_ISR = 'true'
     isExport.mockReturnValue(false)
     fetchGlobalAllData.mockResolvedValue({
       allPages: [
@@ -125,7 +162,6 @@ describe('staticPaths build helpers', () => {
         })
       })
 
-      expect(prefetchAllBlockMaps).not.toHaveBeenCalled()
       expect(result).toEqual({
         paths: [{ params: { prefix: 'post', slug: 'hello' } }],
         fallback: 'blocking'
