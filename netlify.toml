@@ -1,5 +1,5 @@
 [build]
-  command = "yarn run build"
+  command = "NEXT_PUBLIC_THEME=hexo yarn run build"
   publish = ".next"
 
 [build.environment]
