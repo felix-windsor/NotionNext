@@ -57,3 +57,6 @@ package-lock.json
 .perf/
 tsconfig.tsbuildinfo
 webpack-internal:/
+# Local Netlify folder
+.netlify
+.env*
